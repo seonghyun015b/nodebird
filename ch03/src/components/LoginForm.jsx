@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -25,7 +24,7 @@ const LoginForm = () => {
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
     dispatch(loginAction({ id, password }));
-  }, []);
+  }, [id, password]);
 
   return (
     <>
@@ -57,10 +56,6 @@ const LoginForm = () => {
       </FormWrapper>
     </>
   );
-};
-
-LoginForm.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
