@@ -9,12 +9,12 @@ const CommentForm = ({ post }) => {
   const [commentText, onChangeCommentText] = useInput('');
 
   const onSubmitComment = useCallback(() => {
-    console.log(id, commentText);
-  }, [commentText]);
+    console.log(post.id, commentText);
+  }, [post.id, commentText]);
 
   return (
     <Form onFinish={onSubmitComment}>
-      <Form.Item style={{ position: 'relative', margin: 0 }}>
+      <Form.Item style={{ position: 'relative' }}>
         <Input.TextArea
           value={commentText}
           onChange={onChangeCommentText}
