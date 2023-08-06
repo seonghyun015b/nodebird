@@ -11,24 +11,31 @@ export const initialState = {
       content: '첫 번째 게시글 #해시태그 #익스프레스',
       Images: [
         {
+          id: shortId.generate(),
           src: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Baby.tux-800x800.png',
         },
         {
+          id: shortId.generate(),
           src: 'https://cdnb.artstation.com/p/assets/images/images/002/023/575/large/okan-bulbul-penguin-new04.jpg?1456141918',
         },
         {
+          id: shortId.generate(),
           src: 'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA0L2pvYjY4Ni0yODUteC5qcGc.jpg?s=-wP7u0WhXmFn8GbzreOWR2zdM7O7EP79uN6zvW1vavI',
         },
       ],
       Comments: [
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: 'nero',
           },
           content: '우와 개정판이 나왔군요~',
         },
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: 'hero',
           },
           content: '얼른 사고싶어요~',
@@ -42,6 +49,10 @@ export const initialState = {
   addPostDone: false,
   addPostError: null,
 
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
+
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -50,6 +61,10 @@ export const initialState = {
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
@@ -66,8 +81,8 @@ export const addComment = (data) => ({
 });
 
 const dummyPost = (data) => ({
-  id: shortId.generate(),
-  content: data,
+  id: data.id,
+  content: data.content,
   User: {
     id: 1,
     nickname: '제로초',
@@ -107,6 +122,28 @@ const reducer = (state = initialState, action) => {
         addPostLoading: false,
         addPostError: action.error,
       };
+
+    case REMOVE_POST_REQUEST:
+      return {
+        ...state,
+        removePostLoading: true,
+        removePostDone: false,
+        removePostError: null,
+      };
+    case REMOVE_POST_SUCCESS:
+      return {
+        ...state,
+        mainPosts: state.mainPosts.filter((v) => v.id !== action.data),
+        removePostLoading: false,
+        removePostDone: true,
+      };
+    case REMOVE_POST_FAILURE:
+      return {
+        ...state,
+        removePostLoading: false,
+        removePostError: action.error,
+      };
+
     case ADD_COMMENT_REQUEST:
       return {
         ...state,
@@ -138,6 +175,7 @@ const reducer = (state = initialState, action) => {
         addCommentLoading: false,
         addCommentError: action.error,
       };
+
     default:
       return state;
   }
