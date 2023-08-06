@@ -10,13 +10,15 @@ const CommentForm = ({ post }) => {
 
   const id = useSelector((state) => state.user.me?.id);
 
-  const { addCommentDone } = useSelector((state) => state.post);
+  const { addCommentDone, addCommentLoading } = useSelector(
+    (state) => state.post
+  );
 
-  const [commentText, onChangeCommentText, setComment] = useInput('');
+  const [commentText, onChangeCommentText, setCommentText] = useInput('');
 
   useEffect(() => {
     if (addCommentDone) {
-      setComment('');
+      setCommentText('');
     }
   }, [addCommentDone]);
 
@@ -29,7 +31,7 @@ const CommentForm = ({ post }) => {
         userId: id,
       },
     });
-  }, [id, commentText]);
+  }, [commentText, id]);
 
   return (
     <Form onFinish={onSubmitComment}>
@@ -40,9 +42,10 @@ const CommentForm = ({ post }) => {
           rows={4}
         />
         <Button
-          style={{ position: 'absolute', right: 0, bottom: -40 }}
+          style={{ position: 'absolute', right: 0, bottom: -40, zIndex: 1 }}
           type='primary'
           htmlType='submit'
+          loading={addCommentLoading}
         >
           삐약
         </Button>

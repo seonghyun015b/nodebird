@@ -6,11 +6,14 @@ import useInput from '../hooks/useInput';
 
 const PostForm = () => {
   const imageInput = useRef();
+
   const onClickImageUpLoad = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
 
-  const { imagePaths, addPostDone } = useSelector((state) => state.post);
+  const { imagePaths, addPostDone, addPostLoading } = useSelector(
+    (state) => state.post
+  );
   const dispatch = useDispatch();
 
   const [text, onChangeText, setText] = useInput('');
@@ -45,7 +48,12 @@ const PostForm = () => {
           ref={imageInput}
         />
         <Button onClick={onClickImageUpLoad}>이미지 업로드</Button>
-        <Button type='primary' style={{ float: 'right' }} htmlType='submit'>
+        <Button
+          type='primary'
+          style={{ float: 'right' }}
+          htmlType='submit'
+          loading={addPostLoading}
+        >
           짹짹
         </Button>
       </div>
