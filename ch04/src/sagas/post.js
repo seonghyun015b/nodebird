@@ -1,11 +1,4 @@
-import {
-  all,
-  fork,
-  put,
-  delay,
-  takeLatest,
-  throttle,
-} from 'redux-saga/effects';
+import { all, fork, put, delay, takeLatest } from 'redux-saga/effects';
 import shortId from 'shortid';
 import axios from 'axios';
 
