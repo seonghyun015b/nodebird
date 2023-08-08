@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import PostImages from './PostImages';
 import PostCardContent from './PostCardContent';
+import FollowButton from './FollowButton';
 import CommentForm from './CommentFrom';
 import { Avatar, Button, Card, Popover, List } from 'antd';
 import {
@@ -79,6 +80,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        extra={id && <FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
