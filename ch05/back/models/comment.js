@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      charset: 'utf-8',
-      collate: 'utf-8_general_ci',
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_general_ci',
     }
   );
   Comment.associate = (db) => {
