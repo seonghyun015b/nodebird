@@ -1,6 +1,7 @@
 const express = require('express');
-
+const cors = require('cors');
 const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 
 const db = require('./models/index.js');
 
@@ -13,6 +14,15 @@ db.sequelize
   })
   .catch(console.error);
 
+app.use(
+  cors({
+    origin: true,
+    // credentials: false,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (req, res) => {
   res.send('hello express');
 });
@@ -22,6 +32,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/post', postRouter);
+app.use('/user', userRouter);
 
 app.listen(3065, () => {
   console.log('서버 실행중');
