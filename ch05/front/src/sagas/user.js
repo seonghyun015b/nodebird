@@ -19,10 +19,6 @@ import {
   UNFOLLOW_FAILURE,
 } from '../reducers/user';
 
-function logoutAPI() {
-  return axios.post('/api/logout');
-}
-
 function followAPI() {
   return axios.post('/api/follow');
 }
@@ -90,10 +86,13 @@ function* logIn(action) {
 
 // 로그아웃
 
+function logoutAPI() {
+  return axios.post('/user/logout');
+}
+
 function* logOut() {
   try {
-    // const result = yield call(signUpAPI);
-    yield delay(1000);
+    yield call(logoutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
