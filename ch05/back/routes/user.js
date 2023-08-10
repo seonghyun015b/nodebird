@@ -21,9 +21,15 @@ router.post('/login', (req, res, next) => {
         return next(loginErr);
       }
 
-      return res.json(user);
+      return res.status(200).json(user);
     });
   })(req, res, next);
+});
+
+router.post('/logout', (req, res, next) => {
+  req.logout();
+  req.session.destroy();
+  res.send('ok');
 });
 
 router.post('/', async (req, res, next) => {
