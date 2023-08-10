@@ -1,8 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { User } = require('../models');
+const { User, Post } = require('../models');
 const passport = require('passport');
 const router = express.Router();
+
+// 로그인
 
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
@@ -21,16 +23,41 @@ router.post('/login', (req, res, next) => {
         return next(loginErr);
       }
 
-      return res.status(200).json(user);
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: user.id },
+        attributes: {
+          exclude: ['password'],
+        },
+        include: [
+          {
+            model: Post,
+          },
+          {
+            model: User,
+            as: 'Followings',
+          },
+          {
+            model: User,
+            as: 'Followers',
+          },
+        ],
+      });
+
+      // console.log(fullUserWithoutPassword);
+      return res.status(200).json(fullUserWithoutPassword);
     });
   })(req, res, next);
 });
+
+// 로그아웃
 
 router.post('/logout', (req, res, next) => {
   req.logout();
   req.session.destroy();
   res.send('ok');
 });
+
+// 회원가입
 
 router.post('/', async (req, res, next) => {
   try {
