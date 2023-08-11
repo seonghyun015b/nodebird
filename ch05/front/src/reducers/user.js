@@ -19,6 +19,9 @@ export const initialState = {
   unfollowLoading: false, // 언팔로우 시도중
   unfollowDone: false,
   unfollowError: null,
+  loadUserLoading: false, // 유저 정보 불러오는중
+  loadUserDone: false,
+  loadUserFailure: false,
   me: null,
   signUpData: {},
   loginData: {},
@@ -51,14 +54,9 @@ export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: '제로초',
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [{ nickname: '김' }, { nickname: '이' }, { nickname: '박' }],
-  Followers: [{ nickname: '김' }, { nickname: '박' }, { nickname: '이' }],
-});
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
 
 export const loginRequestAction = (data) => {
   return {
@@ -76,6 +74,22 @@ export const logoutRequestAction = () => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserDone = false;
+        draft.loadUserFailure = false;
+        break;
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.me = action.data;
+        draft.loadUserFailure = false;
+        break;
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = false;
+        draft.loadUserFailure = action.error;
+        break;
+
       case FOLLOW_REQUEST:
         draft.followLoading = true;
         draft.followError = false;
