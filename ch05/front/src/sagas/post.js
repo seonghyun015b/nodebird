@@ -1,5 +1,4 @@
 import { all, fork, put, call, delay, takeLatest } from 'redux-saga/effects';
-import shortId from 'shortid';
 import axios from 'axios';
 
 import {
@@ -15,7 +14,6 @@ import {
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
-  generateDummyPost,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -26,20 +24,21 @@ function removePostAPI(data) {
   return axios.post('/api/post', data);
 }
 
+// 게시글 불러오기
+
 function loadPostAPI(data) {
-  return axios.get('/api/post', data);
+  return axios.get('/posts', data);
 }
 
 function* loadPost(action) {
   try {
-    // const result = yield call(addPostAPI, action.data);
-    yield delay(1000);
-    const id = shortId.generate();
+    const result = yield call(loadPostAPI, action.data);
     yield put({
       type: LOAD_POST_SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data,
     });
   } catch (err) {
+    console.log(err);
     yield put({
       type: LOAD_POST_FAILURE,
       data: err.response.data,

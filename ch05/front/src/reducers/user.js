@@ -76,8 +76,8 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
       case LOAD_MY_INFO_REQUEST:
         draft.loadUserLoading = true;
+        draft.loadUserError = null;
         draft.loadUserDone = false;
-        draft.loadUserFailure = false;
         break;
       case LOAD_MY_INFO_SUCCESS:
         draft.loadUserLoading = false;
@@ -124,7 +124,7 @@ const reducer = (state = initialState, action) => {
 
       case LOG_IN_REQUEST:
         draft.logInLoading = true;
-        draft.logInError = false;
+        draft.logInError = null;
         draft.logInDone = false;
         break;
       case LOG_IN_SUCCESS:
@@ -140,12 +140,12 @@ const reducer = (state = initialState, action) => {
       case LOG_OUT_REQUEST:
         draft.logOutLoading = true;
         draft.logOutDone = false;
-        draft.logOutError = false;
+        draft.logOutError = null;
         break;
       case LOG_OUT_SUCCESS:
         draft.logOutLoading = false;
         draft.logOutDone = true;
-        draft.me = false;
+        draft.me = null;
         break;
       case LOG_OUT_FAILURE:
         draft.logOutLoading = false;
@@ -154,7 +154,7 @@ const reducer = (state = initialState, action) => {
 
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;
-        draft.signUpDone = false;
+        draft.signUpDone = null;
         draft.signUpError = false;
         break;
       case SIGN_UP_SUCCESS:
@@ -168,8 +168,8 @@ const reducer = (state = initialState, action) => {
 
       case CHANGE_NICKNAME_REQUEST:
         draft.changeNicknameLoading = true;
+        draft.changeNicknameError = null;
         draft.changeNicknameDone = false;
-        draft.changeNicknameError = false;
         break;
       case CHANGE_NICKNAME_SUCCESS:
         draft.changeNicknameLoading = false;
