@@ -34,10 +34,6 @@ function followAPI() {
   return axios.post('/api/follow');
 }
 
-function unfollowAPI() {
-  return axios.post('/api/unfollow');
-}
-
 // 팔로우
 function* follow(action) {
   try {
@@ -56,6 +52,10 @@ function* follow(action) {
 }
 
 // 언팔로우
+
+function unfollowAPI() {
+  return axios.post('/api/unfollow');
+}
 
 function* unfollow(action) {
   try {
