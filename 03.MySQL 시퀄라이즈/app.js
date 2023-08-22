@@ -8,10 +8,6 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello express</h1>');
 });
 
-app.get('/api', (req, res) => {
-  res.send('<h1>Hello api</h1>');
-});
-
 app.use('/post', postRouter);
 
 app.listen(port, () => {
