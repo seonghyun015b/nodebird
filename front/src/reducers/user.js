@@ -51,23 +51,6 @@ export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: '제로초',
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [
-    { nickname: '부기초' },
-    { nickname: 'park' },
-    { nickname: 'KIM' },
-  ],
-  Followers: [
-    { nickname: '부기초' },
-    { nickname: 'park' },
-    { nickname: 'KIM' },
-  ],
-});
-
 export const loginRequestAction = (data) => {
   return {
     type: LOG_IN_REQUEST,
@@ -84,6 +67,7 @@ export const logoutRequestAction = () => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      // 팔로우
       case FOLLOW_REQUEST:
         draft.followLoading = true;
         draft.followError = null;
@@ -101,6 +85,7 @@ const reducer = (state = initialState, action) => {
         draft.followError = action.error;
         break;
 
+      // 언팔로우
       case UNFOLLOW_REQUEST:
         draft.unfollowLoading = true;
         draft.unfollowError = null;
@@ -120,6 +105,7 @@ const reducer = (state = initialState, action) => {
         draft.unfollowError = action.error;
         break;
 
+      // 로그인
       case LOG_IN_REQUEST:
         draft.logInLoading = true;
         draft.logInError = null;
@@ -128,7 +114,7 @@ const reducer = (state = initialState, action) => {
 
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
-        draft.me = dummyUser(action.data);
+        draft.me = action.data;
         draft.logInDone = true;
         break;
 
@@ -137,6 +123,7 @@ const reducer = (state = initialState, action) => {
         draft.logInError = action.error;
         break;
 
+      // 로그아웃
       case LOG_OUT_REQUEST:
         draft.logOutLoading = true;
         draft.logOutDone = false;
@@ -154,6 +141,7 @@ const reducer = (state = initialState, action) => {
         draft.logOutError = action.error;
         break;
 
+      // 회원가입
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;
         draft.signUpDone = false;
@@ -170,6 +158,7 @@ const reducer = (state = initialState, action) => {
         draft.signUpError = action.error;
         break;
 
+      // 닉네임 변경
       case CHANGE_NICKNAME_REQUEST:
         draft.changeNicknameLoading = true;
         draft.changeNicknameDone = false;
