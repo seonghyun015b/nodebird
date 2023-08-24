@@ -1,13 +1,6 @@
 import shortId from 'shortid';
 import axios from 'axios';
-import {
-  delay,
-  all,
-  put,
-  fork,
-  takeLatest,
-  throttle,
-} from 'redux-saga/effects';
+import { delay, all, put, fork, takeLatest } from 'redux-saga/effects';
 import {
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,

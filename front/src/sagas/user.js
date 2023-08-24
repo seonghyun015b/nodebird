@@ -3,21 +3,26 @@ import { all, fork, call, delay, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
+  // 로그인
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
   LOG_IN_FAILURE,
-  LOG_OUT_FAILURE,
-  LOG_OUT_SUCCESS,
+  // 로그아웃
   LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
+  LOG_OUT_FAILURE,
+  // 회원가입
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
-  UNFOLLOW_REQUEST,
+  // 팔로우
   FOLLOW_REQUEST,
-  UNFOLLOW_SUCCESS,
-  UNFOLLOW_FAILURE,
   FOLLOW_SUCCESS,
   FOLLOW_FAILURE,
+  // 언팔로우
+  UNFOLLOW_REQUEST,
+  UNFOLLOW_SUCCESS,
+  UNFOLLOW_FAILURE,
 } from '../reducers/user';
 
 // 로그인
@@ -44,17 +49,17 @@ function* logIn(action) {
 // 로그아웃
 
 function logOutAPI() {
-  return axios.post('/api/logout');
+  return axios.post('/user/logout');
 }
 
 function* logOut() {
   try {
-    // const result = yield call(logOutAPI);
-    yield delay(1000);
+    yield call(logOutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
   } catch (err) {
+    console.log(err);
     yield put({
       type: LOG_OUT_FAILURE,
       error: err.response.data,
