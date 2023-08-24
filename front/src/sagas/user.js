@@ -20,21 +20,18 @@ import {
   FOLLOW_FAILURE,
 } from '../reducers/user';
 
-function logInAPI(data) {
-  return axios.post('/api/login', data);
-}
+// 로그인
 
-// const l = logIn({ type: 'LOG_IN_REQUEST', data: { id: 'zerocho@gmail.com' } });
-// l.next();
-// l.next();
+function logInAPI(data) {
+  return axios.post('/user/login', data);
+}
 
 function* logIn(action) {
   try {
-    // const result = yield call(logInAPI, action.data);
-    yield delay(1000);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -43,6 +40,8 @@ function* logIn(action) {
     });
   }
 }
+
+// 로그아웃
 
 function logOutAPI() {
   return axios.post('/api/logout');
@@ -63,8 +62,10 @@ function* logOut() {
   }
 }
 
+// 회원가입
+
 function signUpAPI(data) {
-  return axios.post('http://localhost:3065/user', data);
+  return axios.post('/user', data);
 }
 
 function* signUp(action) {
