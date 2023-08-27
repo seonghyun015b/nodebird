@@ -66,6 +66,10 @@ function* addPost(action) {
   }
 }
 
+function* watchAddPost() {
+  yield takeLatest(ADD_POST_REQUEST, addPost);
+}
+
 // 게시글 삭제
 
 function removePostAPI(data) {
@@ -114,20 +118,16 @@ function* addComment(action) {
   }
 }
 
+function* watchAddComment() {
+  yield takeLatest(ADD_COMMENT_REQUEST, addComment);
+}
+
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
-function* watchAddPost() {
-  yield takeLatest(ADD_POST_REQUEST, addPost);
-}
-
 function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
-}
-
-function* watchAddComment() {
-  yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
 export default function* postSaga() {
