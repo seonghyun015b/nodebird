@@ -1,22 +1,27 @@
 const express = require('express');
 const cors = require('cors');
+
+// session, cookieParser,dotenv, morgan
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 
+// passport
+const passport = require('passport');
+const passportConfig = require('./passport');
+
+const db = require('./models/index.js');
+
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
-
-const db = require('./models/index.js');
-const passport = require('passport');
-const passportConfig = require('./passport');
 
 dotenv.config();
 
 const app = express();
 
+// 시퀄라이즈 - db
 db.sequelize
   .sync()
   .then(() => {
@@ -24,6 +29,8 @@ db.sequelize
   })
   .catch(console.error);
 passportConfig();
+
+// CORS
 
 app.use(
   cors({
@@ -35,6 +42,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// session, cookieParser
 app.use(cookieParser(process.env.COOCKIE_SECRET));
 app.use(
   session({
