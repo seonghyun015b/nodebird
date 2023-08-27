@@ -5,7 +5,8 @@ const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-// 게시글
+// POST/post 게시글 작성
+
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.create({
@@ -37,7 +38,8 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
-// 댓글
+//POST/comment  댓글작성
+
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({
