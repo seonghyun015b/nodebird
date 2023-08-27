@@ -56,6 +56,10 @@ function* loadUser(action) {
   }
 }
 
+function* watchLoadUser() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+}
+
 // 로그인
 
 function logInAPI(data) {
@@ -75,6 +79,10 @@ function* logIn(action) {
       error: err.response.data,
     });
   }
+}
+
+function* watchLogIn() {
+  yield takeEvery(LOG_IN_REQUEST, logIn);
 }
 
 // 로그아웃
@@ -98,6 +106,10 @@ function* logOut() {
   }
 }
 
+function* watchLogOut() {
+  yield takeEvery(LOG_OUT_REQUEST, logOut);
+}
+
 // 회원가입
 
 function signUpAPI(data) {
@@ -119,6 +131,12 @@ function* signUp(action) {
   }
 }
 
+function* watchSignUp() {
+  yield takeEvery(SIGN_UP_REQUEST, signUp);
+}
+
+// 팔로우
+
 function followAPI() {
   return axios.post('/api/follow');
 }
@@ -138,6 +156,12 @@ function* follow(action) {
     });
   }
 }
+
+function* watchFollow() {
+  yield takeEvery(FOLLOW_REQUEST, follow);
+}
+
+// 언팔로우
 
 function unfollowAPI() {
   return axios.post('/api/unfollowUp');
@@ -159,28 +183,8 @@ function* unfollow(action) {
   }
 }
 
-function* watchFollow() {
-  yield takeEvery(FOLLOW_REQUEST, follow);
-}
-
 function* watchUnfollow() {
   yield takeEvery(UNFOLLOW_REQUEST, unfollow);
-}
-
-function* watchLogIn() {
-  yield takeEvery(LOG_IN_REQUEST, logIn);
-}
-
-function* watchLogOut() {
-  yield takeEvery(LOG_OUT_REQUEST, logOut);
-}
-
-function* watchSignUp() {
-  yield takeEvery(SIGN_UP_REQUEST, signUp);
-}
-
-function* watchLoadUser() {
-  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
 }
 
 export default function* userSaga() {

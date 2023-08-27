@@ -16,6 +16,8 @@ import { REMOVE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 const PostCard = ({ post }) => {
+  const id = useSelector((state) => state.user.me?.id);
+
   const dispatch = useDispatch();
 
   const { removePostLoading } = useSelector((state) => state.post);
@@ -37,8 +39,6 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
   }, []);
-
-  const id = useSelector((state) => state.user.me?.id);
 
   return (
     <div style={{ marginBottom: 20 }}>
@@ -116,7 +116,7 @@ PostCard.propTypes = {
     id: PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
-    createdAt: PropTypes.object,
+    createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
