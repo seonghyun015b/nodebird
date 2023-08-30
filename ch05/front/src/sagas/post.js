@@ -1,4 +1,4 @@
-import { all, fork, put, call, delay, takeLatest } from 'redux-saga/effects';
+import { all, fork, put, call, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
@@ -26,12 +26,6 @@ import {
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
-
-// API
-
-function removePostAPI(data) {
-  return axios.post('/api/post', data);
-}
 
 // 게시글 불러오기
 
@@ -101,13 +95,18 @@ function* addComment(action) {
   }
 }
 
+// 게시글 삭제
+
+function removePostAPI(data) {
+  return axios.delete(`/post/${data}`);
+}
+
 function* removePost(action) {
   try {
-    // const result = yield call(removePostAPI, action.data);
-    yield delay(1000);
+    const result = yield call(removePostAPI, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,

@@ -136,7 +136,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
 
 // POST / patch / 좋아요
 
-router.patch('/:postId/like', async (req, res, next) => {
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     if (!post) {
@@ -152,7 +152,7 @@ router.patch('/:postId/like', async (req, res, next) => {
 
 // POST / delete / 싫어요
 
-router.delete('/:postId/like', async (req, res, next) => {
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     if (!post) {
@@ -175,8 +175,16 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
 
 // POST / delete
 
-router.delete('/', (req, res) => {
-  res.json({ id: 1 });
+router.delete('/:postId', isLoggedIn, async (req, res, next) => {
+  try {
+    await Post.destroy({
+      where: { id: req.params.postId, UserId: req.user.id },
+    });
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
 });
 
 module.exports = router;
