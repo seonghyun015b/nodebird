@@ -82,7 +82,7 @@ function* watchAddPost() {
 // 게시글 삭제
 
 function removePostAPI(data) {
-  return axios.delete('/api/post', data);
+  return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
@@ -90,7 +90,7 @@ function* removePost(action) {
     const result = yield call(removePostAPI, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,
