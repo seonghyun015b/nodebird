@@ -1,9 +1,21 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const { Post, User, Comment, Image } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
+
+// uploads 폴더 생성
+
+try {
+  fs.accessSync('uploads');
+} catch (error) {
+  console.log('uploads 폴더가 없으므로 생성합니다.');
+  fs.mkdirSync('uploads');
+}
 
 // POST/post 게시글 작성
 
@@ -110,6 +122,29 @@ router.delete('/:postId/like', async (req, res, next) => {
     next(err);
   }
 });
+
+// POST / post / images 이미지 업로드
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, 'uploads');
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname);
+      const basename = path.basename(file.originalname, ext);
+      done(null, basename + new Date().getTime() + ext);
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
+  console.log(req.filename);
+  res.json(req.files.map((v) => v.filename));
+});
+
+// POST / delete
 
 router.delete('/', (req, res) => {
   res.json({ id: 1 });
