@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 // session, cookieParser,dotenv, morgan
 const session = require('express-session');
@@ -38,6 +39,9 @@ app.use(
     credentials: true,
   })
 );
+
+// 이미지 로딩
+app.use('/', express.static(path.join(__dirname, 'uploads')));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

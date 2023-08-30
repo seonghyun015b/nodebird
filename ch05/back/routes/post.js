@@ -19,12 +19,42 @@ try {
 
 // POST/post 게시글 작성
 
-router.post('/', isLoggedIn, async (req, res, next) => {
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, 'uploads');
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname);
+      const basename = path.basename(file.originalname, ext);
+      done(null, basename + '_' + new Date().getTime() + ext);
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+
+    // 이미지가 있는 경우
+    if (req.body.image) {
+      // 이미지 여러 개 올린경우
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((img) => Image.create({ src: img }))
+        );
+        await post.addImages(images);
+      } else {
+        // 이미지 하나만 올리면
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
+
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
@@ -124,20 +154,6 @@ router.delete('/:postId/like', async (req, res, next) => {
 });
 
 // POST / post / images 이미지 업로드
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, 'uploads');
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname);
-      const basename = path.basename(file.originalname, ext);
-      done(null, basename + new Date().getTime() + ext);
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 },
-});
 
 router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
   console.log(req.filename);

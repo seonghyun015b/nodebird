@@ -58,7 +58,7 @@ function* loadPost(action) {
 // 게시글 작성
 
 function addPostAPI(data) {
-  return axios.post('/post', { content: data });
+  return axios.post('/post', data);
 }
 
 function* addPost(action) {
