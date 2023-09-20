@@ -9,36 +9,50 @@ import {
 import axios from 'axios';
 
 import {
+  // 로그인
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
   LOG_IN_FAILURE,
+  // 로그아웃
   LOG_OUT_REQUEST,
   LOG_OUT_SUCCESS,
   LOG_OUT_FAILURE,
+  // 회원가입
+  SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
-  SIGN_UP_FAILURE,
+  // 팔로우
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
   FOLLOW_FAILURE,
+  // 언팔로우
   UNFOLLOW_REQUEST,
   UNFOLLOW_SUCCESS,
   UNFOLLOW_FAILURE,
+  // 내 정보 불러오기
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  // 팔로워
   LOAD_FOLLOWERS_REQUEST,
-  LOAD_FOLLOWERS_SUCCESS,
-  LOAD_FOLLOWERS_FAILURE,
   LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWERS_FAILURE,
+  // 팔로잉
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
+  LOAD_FOLLOWERS_SUCCESS,
+  // 팔로워 차단
   REMOVE_FOLLOWER_REQUEST,
   REMOVE_FOLLOWER_SUCCESS,
   REMOVE_FOLLOWER_FAILURE,
+  // 닉네임 변경
   CHANGE_NICKNAME_REQUEST,
   CHANGE_NICKNAME_SUCCESS,
   CHANGE_NICKNAME_FAILURE,
+  // 유저정보 불러오기
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
 } from '../reducers/user';
 
 function followAPI(data) {
@@ -157,15 +171,14 @@ function* watchRemoveFollower() {
   yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
 }
 
-// 유저 정보 불러오기
-
-function loadUserAPI() {
+// 내 정보 불러오기
+function loadMyInfoAPI() {
   return axios.get('/user');
 }
 
-function* loadUser(action) {
+function* loadMyInfo(action) {
   try {
-    const result = yield call(loadUserAPI, action.data);
+    const result = yield call(loadMyInfoAPI, action.data);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -173,6 +186,27 @@ function* loadUser(action) {
   } catch (err) {
     yield put({
       type: LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 다른사람 정보 불러오기
+
+function loadUserAPI(data) {
+  return axios.get(`/user/${data}`);
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI, action.data);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_USER_FAILURE,
       error: err.response.data,
     });
   }
@@ -284,7 +318,11 @@ function* watchSignUp() {
 }
 
 function* watchLoadUser() {
-  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
+}
+
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
 
 function* watchChangeNickname() {
@@ -303,5 +341,6 @@ export default function* userSaga() {
     fork(watchLoadfollowing),
     fork(watchRemoveFollower),
     fork(watchChangeNickname),
+    fork(watchLoadMyInfo),
   ]);
 }

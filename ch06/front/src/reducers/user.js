@@ -19,6 +19,9 @@ export const initialState = {
   unfollowLoading: false, // 언팔로우 시도중
   unfollowDone: false,
   unfollowError: null,
+  loadMyInfoLoading: false, // 내 정보 불러오는중
+  loadMyInfoDone: false,
+  loadMyInfoFailure: false,
   loadUserLoading: false, // 유저 정보 불러오는중
   loadUserDone: false,
   loadUserFailure: false,
@@ -32,8 +35,7 @@ export const initialState = {
   removeFollowerDone: false,
   removeFollowerError: false,
   me: null,
-  signUpData: {},
-  loginData: {},
+  userInfo: null, // 유저 정보
 };
 
 export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
@@ -75,6 +77,10 @@ export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
+
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
@@ -95,21 +101,40 @@ export const logoutRequestAction = () => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
-      // 유저 정보 가져오기
-      case LOAD_MY_INFO_REQUEST:
+      // 내 정보 가져오기
+      case LOAD_USER_REQUEST:
         draft.loadUserLoading = true;
         draft.loadUserError = null;
         draft.loadUserDone = false;
         break;
-      case LOAD_MY_INFO_SUCCESS:
+
+      case LOAD_USER_SUCCESS:
         draft.loadUserLoading = false;
-        draft.me = action.data;
-        draft.loadUserFailure = false;
+        draft.userInfo = action.data;
+        draft.loadUserDone = true;
         break;
-      case LOAD_MY_INFO_FAILURE:
+
+      case LOAD_USER_FAILURE:
         draft.loadUserLoading = false;
-        draft.loadUserDone = false;
-        draft.loadUserFailure = action.error;
+        draft.loadUserError = action.error;
+        break;
+
+      // 내 정보 가져오기
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoError = null;
+        draft.loadMyInfoDone = false;
+        break;
+
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadMyInfoLoading = false;
+        draft.me = action.data;
+        draft.loadMyInfoDone = true;
+        break;
+
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error;
         break;
 
       // 팔로우

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 
@@ -62,19 +63,28 @@ const Home = () => {
 // SSR
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async () => {
-    console.log('context', store);
+  (store) =>
+    async ({ req }) => {
+      console.log('context', store);
 
-    store.dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
+      const cookie = req ? req.headers.cookie : '';
 
-    store.dispatch({
-      type: LOAD_POST_REQUEST,
-    });
-    store.dispatch(END);
-    await store.sagaTask.toPromise();
-  }
+      axios.defaults.headers.Cookie = cookie;
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+
+      store.dispatch({
+        type: LOAD_POST_REQUEST,
+      });
+      store.dispatch(END);
+      await store.sagaTask.toPromise();
+    }
 );
 
 export default Home;
