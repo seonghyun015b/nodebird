@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { END } from 'redux-saga';
+
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
-import { useDispatch, useSelector } from 'react-redux';
+
+import wrapper from '../store/configureStore';
+
 import { LOAD_POST_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 
@@ -11,19 +16,15 @@ const Home = () => {
 
   const { me } = useSelector((state) => state.user);
 
-  const { mainPosts, hasMorePost, loadPostLoading } = useSelector(
+  const { mainPosts, hasMorePost, loadPostLoading, retweetError } = useSelector(
     (state) => state.post
   );
 
   useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-
-    dispatch({
-      type: LOAD_POST_REQUEST,
-    });
-  }, []);
+    if (retweetError) {
+      alert(retweetError);
+    }
+  }, [retweetError]);
 
   useEffect(() => {
     function onScroll() {
@@ -57,4 +58,23 @@ const Home = () => {
     </AppLayout>
   );
 };
+
+// SSR
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async () => {
+    console.log('context', store);
+
+    store.dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+
+    store.dispatch({
+      type: LOAD_POST_REQUEST,
+    });
+    store.dispatch(END);
+    await store.sagaTask.toPromise();
+  }
+);
+
 export default Home;
