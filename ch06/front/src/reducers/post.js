@@ -14,6 +14,10 @@ export const initialState = {
   loadPostsDone: false,
   loadPostsError: null,
 
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
+
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
@@ -167,19 +171,18 @@ const reducer = (state = initialState, action) => {
         break;
 
       case LOAD_POST_REQUEST:
-        draft.loadPostsLoading = true;
-        draft.loadPostsDone = false;
-        draft.loadPostsError = null;
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
         break;
       case LOAD_POST_SUCCESS:
-        draft.loadPostsLoading = false;
-        draft.loadPostsDone = true;
-        draft.mainPosts = draft.mainPosts.concat(action.data);
-        draft.hasMorePosts = action.data.length === 10;
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
         break;
       case LOAD_POST_FAILURE:
-        draft.loadPostsLoading = false;
-        draft.loadPostsError = action.error;
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
         break;
 
       case LOAD_POSTS_REQUEST:
@@ -190,7 +193,8 @@ const reducer = (state = initialState, action) => {
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        draft.singlePost = action.data;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = action.data.length === 10;
         break;
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;

@@ -35,30 +35,8 @@ import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
 // 게시글 불러오기
 
-function loadPostAPI(lastId) {
+function loadPostsAPI(lastId) {
   return axios.get(`/posts?lastId=${lastId} || 0`);
-}
-
-function* loadPost(action) {
-  try {
-    const result = yield call(loadPostAPI, action.data);
-    yield put({
-      type: LOAD_POST_SUCCESS,
-      data: result.data,
-    });
-  } catch (err) {
-    console.log(err);
-    yield put({
-      type: LOAD_POST_FAILURE,
-      data: err.response.data,
-    });
-  }
-}
-
-// 게시글 하나 불러오기
-
-function loadPostsAPI(data) {
-  return axios.get(`/post/${data}`);
 }
 
 function* loadPosts(action) {
@@ -69,8 +47,30 @@ function* loadPosts(action) {
       data: result.data,
     });
   } catch (err) {
+    console.log(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+// 게시글 하나 불러오기
+
+function loadPostAPI(data) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.data);
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_POST_FAILURE,
       data: err.response.data,
     });
   }
