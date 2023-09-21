@@ -9,7 +9,7 @@ import PostCard from '../components/PostCard';
 
 import wrapper from '../store/configureStore';
 
-import { LOAD_POST_REQUEST } from '../reducers/post';
+import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 
 const Home = () => {
@@ -37,7 +37,7 @@ const Home = () => {
 
         if (hasMorePost && !loadPostLoading) {
           dispatch({
-            type: LOAD_POST_REQUEST,
+            type: LOAD_POSTS_REQUEST,
             lastId,
           });
         }
@@ -80,8 +80,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       });
 
       store.dispatch({
-        type: LOAD_POST_REQUEST,
+        type: LOAD_POSTS_REQUEST,
       });
+
       store.dispatch(END);
       await store.sagaTask.toPromise();
     }
