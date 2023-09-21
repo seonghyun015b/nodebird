@@ -25,6 +25,9 @@ import {
   RETWEET_REQUEST,
   RETWEET_FAILURE,
   RETWEET_SUCCESS,
+  LOAD_POSTS_SUCCESS,
+  LOAD_POSTS_FAILURE,
+  LOAD_POSTS_REQUEST,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -51,6 +54,31 @@ function* loadPost(action) {
 
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
+// 게시글 하나 불러오기
+
+function loadPostsAPI(data) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPosts(action) {
+  try {
+    const result = yield call(loadPostsAPI, action.data);
+    yield put({
+      type: LOAD_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_POSTS_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function* watchLoadPosts() {
+  yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
 
 // 게시글 작성
@@ -246,5 +274,6 @@ export default function* postSaga() {
     fork(watchUnLikePost),
     fork(watchUpLoadImages),
     fork(watchRetweet),
+    fork(watchLoadPosts),
   ]);
 }
