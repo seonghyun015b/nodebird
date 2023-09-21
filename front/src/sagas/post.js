@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { all, put, call, fork, takeLatest } from 'redux-saga/effects';
+import { all, put, call, fork, takeLatest, throttle } from 'redux-saga/effects';
 import {
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
@@ -28,6 +28,12 @@ import {
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -264,12 +270,66 @@ function* watchRetweet() {
   yield takeLatest(RETWEET_REQUEST, retweet);
 }
 
+// 유저가 쓴 글 불러오기
+
+function loadUserPostAPI(data, lastId) {
+  return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
+}
+
+function* loadUserPost(action) {
+  try {
+    const result = yield call(loadUserPostAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLoadUserPost() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPost);
+}
+
+// 유저 해시태그 로드
+
+function loadHashtagPostAPI(data, lastId) {
+  return axios.get(
+    `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
+  );
+}
+
+function* loadHashtagPost(action) {
+  try {
+    const result = yield call(loadHashtagPostAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLoadHashtagPost() {
+  yield throttle(5000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
     fork(watchLoadPost),
+    fork(watchLoadUserPost),
+    fork(watchLoadHashtagPost),
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchUpLoadImages),
