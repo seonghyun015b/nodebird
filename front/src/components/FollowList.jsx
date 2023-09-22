@@ -19,7 +19,7 @@ const ListItem = styled(List.Item)`
   margin-top: 20;
 `;
 
-const FollowList = ({ header, data }) => {
+const FollowList = ({ header, data, onClickMore, loading }) => {
   const listGrid = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }, []));
 
   const dispatch = useDispatch();
@@ -45,7 +45,9 @@ const FollowList = ({ header, data }) => {
         header={<div>{header}</div>}
         loadMore={
           <ListDiv>
-            <Button>더 보기</Button>
+            <Button onClick={onClickMore} loading={loading}>
+              더 보기
+            </Button>
           </ListDiv>
         }
         bordered
@@ -69,6 +71,8 @@ const FollowList = ({ header, data }) => {
 FollowList.propTypes = {
   header: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
+  onClickMore: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default FollowList;
