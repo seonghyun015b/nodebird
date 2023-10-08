@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Col, Input, Menu, Row } from 'antd';
@@ -6,13 +6,20 @@ import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
 import { styled } from 'styled-components';
 import { useSelector } from 'react-redux';
+import useInput from '../hooks/useInput';
+import { Router } from 'next/router';
 
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
 `;
 
 const AppLayout = ({ children }) => {
+  const [searchInput, onChangeSearchInput] = useInput('');
   const { me } = useSelector((state) => state.user);
+
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
   return (
     <>
@@ -25,7 +32,12 @@ const AppLayout = ({ children }) => {
             <Link href='/profile'>프로필</Link>
           </Menu.Item>
           <Menu.Item>
-            <SearchInput enterButton />
+            <SearchInput
+              enterButton
+              value={searchInput}
+              onChange={onChangeSearchInput}
+              onSearch={onSearch}
+            />
           </Menu.Item>
           <Menu.Item>
             <Link href='/signup'>회원가입</Link>
@@ -39,11 +51,7 @@ const AppLayout = ({ children }) => {
             {children}
           </Col>
           <Col xs={24} md={6}>
-            <a
-              href='https://www.naver.com'
-              target='_black'
-              rel='noreferrer noopener'
-            >
+            <a href='https://www.naver.com' target='_black' rel='noreferrer noopener'>
               네이버
             </a>
           </Col>
